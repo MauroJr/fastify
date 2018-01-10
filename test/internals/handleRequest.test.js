@@ -26,15 +26,17 @@ function schemaCompiler (schema) {
 }
 
 test('Request object', t => {
-  t.plan(7)
+  t.plan(9)
   const req = new Request('params', 'req', 'query', 'headers', 'log')
   t.type(req, Request)
   t.equal(req.params, 'params')
-  t.deepEqual(req.req, 'req')
+  t.deepEqual(req.raw, 'req')
+  t.deepEqual(req.req, req.raw)
   t.equal(req.query, 'query')
   t.equal(req.headers, 'headers')
   t.equal(req.log, 'log')
-  t.equal(req.body, null)
+  t.strictDeepEqual(req.body, null)
+  t.strictDeepEqual(req.rawBody, null)
 })
 
 test('handler function - invalid schema', t => {
@@ -114,7 +116,7 @@ test('request should be defined in onSend Hook on post request with content type
 
   fastify.addHook('onSend', (request, reply, payload, done) => {
     t.ok(request)
-    t.ok(request.req)
+    t.ok(request.raw)
     t.ok(request.params)
     t.ok(request.query)
     done()
@@ -145,7 +147,7 @@ test('request should be defined in onSend Hook on post request with content type
 
   fastify.addHook('onSend', (request, reply, payload, done) => {
     t.ok(request)
-    t.ok(request.req)
+    t.ok(request.raw)
     t.ok(request.params)
     t.ok(request.query)
     done()
@@ -176,7 +178,7 @@ test('request should be defined in onSend Hook on options request with content t
 
   fastify.addHook('onSend', (request, reply, payload, done) => {
     t.ok(request)
-    t.ok(request.req)
+    t.ok(request.raw)
     t.ok(request.params)
     t.ok(request.query)
     done()
